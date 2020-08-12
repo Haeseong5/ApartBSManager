@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:text="동"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"/>
+    <EditText
+        android:id="@+id/dialog_complex_et_dong"
+        android:hint="몇 동인지 입력하세요. ex) 113 "
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="라인"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"/>
+    <EditText
+        android:id="@+id/dialog_complex_et_line"
+        android:hint="몇 라인인지 입력하세요. ex) 123 or 45"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="총 층수"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"/>
+    <EditText
+        android:id="@+id/dialog_complex_et_floor"
+        android:hint="총 몇층인지 입력하세요. ex) 25 "
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="2"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <Button
+            android:id="@+id/dialog_complex_cancel"
+            android:text="취소"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/dialog_complex_check"
+            android:text="확인"
+            style="@style/Base.Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</LinearLayout>

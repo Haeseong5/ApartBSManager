@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="colorThatch">#A67F78</color>
+    <color name="colorElephant">#8F8681</color>
+    <color name="colorGrey">#E1DCD9</color>
+    <color name="colorGunmetal">#32435F</color>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+
+    <color name="colorMain">#A67F78</color>
+    <color name="colorBackground">#8F8681</color>
+    <color name="colorSub">#E1DCD9</color>
+    <color name="colorSub2">#32435F</color>
+</resources>
