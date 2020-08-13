@@ -2,11 +2,9 @@ package com.haeseong5.android.pinhole.apart
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
@@ -39,13 +37,10 @@ class MainActivity : BaseActivity(){
         setContentView(R.layout.activity_main)
 
         db = DBHelper(this)
+        setSupportActionBar(toolbar)
 
         //setToolbar
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
-        supportActionBar?.setDisplayShowHomeEnabled(true);
         supportActionBar?.title = getString(R.string.toolbar_title_main)
-        supportActionBar?.setDisplayUseLogoEnabled(true)
 
         btCreateApart.setOnClickListener {
             showNameCreateDialog()
@@ -59,8 +54,8 @@ class MainActivity : BaseActivity(){
         adapter = ApartAdapter(this@MainActivity, apartList)
         apartListView.adapter = adapter
 
-        apartListView.setOnItemClickListener { parent, view, position, id ->
-            Toast.makeText(this, position.toString(), Toast.LENGTH_SHORT).show()
+        apartListView.setOnItemClickListener { _, _, position, _ ->
+//            Toast.makeText(this, apartList[position].id.toString(), Toast.LENGTH_SHORT).show()
             val intent = Intent(this, ComplexActivity::class.java)
             intent.putExtra("id", apartList[position].id)
             intent.putExtra("name", apartList[position].name)
@@ -88,7 +83,11 @@ class MainActivity : BaseActivity(){
 
         mDialogView.dialogApartBtnCheck.setOnClickListener {
             val name = mDialogView.dialogApartEtName.text.toString()
-            add(name)
+            if (name.length > -1){
+                add(name)
+            }else{
+                printToast("두 글자 이상 입력하세요.")
+            }
             mAlertDialog.dismiss()
         }
 
@@ -108,8 +107,11 @@ class MainActivity : BaseActivity(){
 
         mDialogView.dialogApartBtnCheck.setOnClickListener {
             val name = mDialogView.dialogApartEtName.text.toString()
-            update(name, position)
-            mAlertDialog.dismiss()
+            if (name.length > -1){
+                update(name, position)
+            }else{
+                printToast("두 글자 이상 입력하세요.")
+            }
         }
 
         mDialogView.dialogApartBtnCancel.setOnClickListener {
@@ -122,9 +124,10 @@ class MainActivity : BaseActivity(){
         builder.setTitle("Delete")
         builder.setMessage("작업중인 단지를 삭제하시겠습니까?")
         builder.setPositiveButton("확인") {_, _ ->
+            showProgressDialog()
             delete(position)
         }
-        builder.setNegativeButton("취소") {dialog, id ->
+        builder.setNegativeButton("취소") { dialog, _ ->
             dialog.dismiss()
         }
         builder.show()
@@ -136,6 +139,7 @@ class MainActivity : BaseActivity(){
         val code: Long = db.addApart(apart)
         d("code", code.toString())
         if(code > -1){
+            apart.id = code.toInt()
             apartList.add(apart)
             adapter.notifyDataSetChanged()
             Toast.makeText(this,"등록 성공",Toast.LENGTH_SHORT).show()
@@ -159,18 +163,13 @@ class MainActivity : BaseActivity(){
         adapter.notifyDataSetChanged()    }
 
     private fun delete(position: Int){
-        val code: Int = db.deleteApart(apartList[position])
-        d("code", code.toString())
-
-        if(code > -1){
-            apartList.removeAt(position)
-            adapter.notifyDataSetChanged()
+            val code = db.deleteApart(apartList[position].id)
+            if (code > -1){
+                apartList.removeAt(position)
+                adapter.notifyDataSetChanged()
+            }
             Toast.makeText(this,"삭제 성공",Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(this,"삭제 실패",Toast.LENGTH_SHORT).show()
-        }
-        adapter.notifyDataSetChanged()
-
+            dismissProgressDialog()
     }
 
 }

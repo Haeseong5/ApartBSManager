@@ -23,21 +23,25 @@
             android:id="@+id/rbDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="@color/design_default_color_primary"
             android:text="처리완료"/>
         <RadioButton
             android:id="@+id/rbInComplete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="@color/design_default_color_primary"
             android:text="미완료"/>
         <RadioButton
             android:id="@+id/rbBad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="@color/design_default_color_primary"
             android:text="불량"/>
         <RadioButton
             android:id="@+id/rbEtc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="@color/design_default_color_primary"
             android:text="기타"/>
     </RadioGroup>
 

@@ -1,8 +1,9 @@
 package com.haeseong5.android.pinhole.complex
 
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.util.Log.d
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -10,10 +11,8 @@ import androidx.appcompat.app.AlertDialog
 import com.haeseong5.android.pinhole.BaseActivity
 import com.haeseong5.android.pinhole.DBHelper
 import com.haeseong5.android.pinhole.R
-import com.haeseong5.android.pinhole.apart.ApartAdapter
 import com.haeseong5.android.pinhole.dong.DongActivity
 import kotlinx.android.synthetic.main.activity_complex.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_complex.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -32,13 +31,13 @@ class ComplexActivity : BaseActivity() {
             apart_id = intent.getIntExtra("id", 0)
             apart_name = intent.getStringExtra("name")
         }
-
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
-        supportActionBar?.setDisplayShowHomeEnabled(true);
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.title = apart_name //아파트이름 intent로 받기
         supportActionBar?.setDisplayUseLogoEnabled(true)
+        supportActionBar?.title = "${apart_name}아파트" //아파트이름 intent로 받기
 
         complex_bt_create.setOnClickListener{
             showCreateDialog()
@@ -52,7 +51,7 @@ class ComplexActivity : BaseActivity() {
         complex_listview.adapter = adapter
 
         complex_listview.setOnItemClickListener { parent, view, position, id ->
-            Toast.makeText(this, complexList[position].id.toString(), Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, complexList[position].id.toString(), Toast.LENGTH_SHORT).show()
             val intent = Intent(this, DongActivity::class.java)
             intent.putExtra("apart_name", apart_name)
             intent.putExtra("complex_id", complexList[position].id)
@@ -64,8 +63,11 @@ class ComplexActivity : BaseActivity() {
         adapter.setItemClickListener( object : ComplexAdapter.ListBtnClickListener{
             override fun onDeleteButtonClick(view: View, position: Int) {
 //                showNameDeleteDialog(position)
+                showProgressDialog()
+                deleteData(complexList[position].id, position)
             }
         })
+
     }
 
     private fun showCreateDialog(){
@@ -88,17 +90,55 @@ class ComplexActivity : BaseActivity() {
 
             val code = db.addComplex(complex)
             if (code > -1){
+                showProgressDialog()
+                complex.id = code.toInt()
                 complexList.add(complex)
                 adapter.notifyDataSetChanged()
+                addAllHo(complex, code.toInt())
             }else{
                 printToast("DB 등록 실패")
             }
-
             mAlertDialog.dismiss()
         }
 
         mDialogView.dialog_complex_cancel.setOnClickListener {
             mAlertDialog.dismiss()
         }
+    }
+
+    private fun addAllHo(complex: Complex, id: Int){
+        var count = complex.floor * complex.line.length
+        for (i in 1..complex.floor) {
+            var ho: String
+            ho = i.toString() + "0"
+            for (x in complex.line) {
+                ho += x
+                db.addHoData(apart_id, id, ho)
+                count --
+                ho = ho.substring(0, ho.lastIndexOf("0") + 1)
+                d("진행률: ", "$count / ${complex.floor * complex.line.length}")
+            }
+        }
+        dismissProgressDialog()
+    }
+
+    private fun deleteData(complex_id: Int, position: Int){
+        val code: Int = db.deleteComplex(complex_id)
+        if(code>-1){
+            db.deleteDong(complex_id)
+            complexList.removeAt(position)
+        }
+
+        adapter.notifyDataSetChanged()
+        dismissProgressDialog()
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        R.menu.menu_items
     }
 }

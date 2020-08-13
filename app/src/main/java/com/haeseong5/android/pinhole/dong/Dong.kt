@@ -10,6 +10,7 @@ class Dong {
     var isCompletion: Int? = null
     var date: String? = null
     var complex_id: Int = 0
+    var apart_id: Int = 0
 
     constructor() {}
 }

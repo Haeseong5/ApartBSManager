@@ -13,12 +13,11 @@ import com.haeseong5.android.pinhole.R
 class ComplexAdapter (internal val context: Context,
                       internal val complexList: List<Complex>): BaseAdapter() {
 
-
     //킅릭 인터페이스 정의
     interface ListBtnClickListener{
-//        fun onUpdateButtonClick(view: View, position: Int)
         fun onDeleteButtonClick(view: View, position: Int)
     }
+
     //클릭 리스너 선언
     private lateinit var listBtnClickListener: ListBtnClickListener
 
@@ -26,6 +25,7 @@ class ComplexAdapter (internal val context: Context,
     fun setItemClickListener(listBtnClickListener: ListBtnClickListener) {
         this.listBtnClickListener = listBtnClickListener
     }
+
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         lateinit var viewHolder: ViewHolder

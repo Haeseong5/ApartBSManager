@@ -3,6 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="100dp"
+    android:paddingVertical="5dp"
     android:gravity="center_vertical">
     <TextView
         android:id="@+id/item_apart_name"
@@ -17,12 +18,19 @@
         android:id="@+id/item_apart_update_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/button_shape"
+        android:layout_marginVertical="5dp"
         android:focusable="false"
         android:text="수정"/>
     <Button
         android:id="@+id/item_apart_delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/design_default_color_error"
+        android:textColor="@color/colorWhite"
+        android:layout_marginVertical="5dp"
+        android:layout_marginLeft="5dp"
         android:focusable="false"
         android:text="삭제"/>
 

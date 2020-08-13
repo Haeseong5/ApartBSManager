@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PinHole</string>
     <string name="toolbar_title_main">B/S 현황</string>
+    <string name="dialog_progress_message">잠시만 기다려주세요.</string>
 </resources>

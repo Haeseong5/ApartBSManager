@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="toolbarStyle">@style/ToolbarStyle</item> <!--Toolbar 스타일-->
+        <item name="colorControlNormal">@color/colorWhite</item> <!--홈/뒤로가기 버튼의 색상-->
     </style>
 
     <style name="TextViewStyle" parent="Widget.AppCompat.TextView">
@@ -14,4 +16,15 @@
         <item name="android:textColor">@color/colorBlack</item>
     </style>
 
+    <!--Toolbar 스타일-->
+    <style name="ToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/colorGunmetal</item> <!-- Toolbar의 배경색-->
+        <item name="titleTextAppearance">@style/ToolbarTitleStyle.Dark</item> <!-- Toolbar의 타이틀 텍스트-->
+    </style>
+
+    <!-- Toolbar의 타이틀 텍스트-->
+    <style name="ToolbarTitleStyle.Dark" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/colorWhite</item> <!-- Toolbar의 타이틀 텍스트 색상-->
+    </style>
+<!--    https://jabstorage.tistory.com/31-->
 </resources>

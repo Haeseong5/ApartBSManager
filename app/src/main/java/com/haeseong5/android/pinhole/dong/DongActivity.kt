@@ -1,17 +1,18 @@
 package com.haeseong5.android.pinhole.dong
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log.d
+import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.haeseong5.android.pinhole.BaseActivity
 import com.haeseong5.android.pinhole.DBHelper
 import com.haeseong5.android.pinhole.R
 import kotlinx.android.synthetic.main.activity_dong.*
 import kotlinx.android.synthetic.main.toolbar.*
 
-class DongActivity : AppCompatActivity() {
+class DongActivity : BaseActivity() {
     private var itemList = arrayListOf<Dong>()
     private val db: DBHelper = DBHelper(this)
     private var apart_name :String? = null
@@ -30,11 +31,11 @@ class DongActivity : AppCompatActivity() {
             complex_line = intent.getStringExtra("complex_line")
         }
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
-        supportActionBar?.setDisplayShowHomeEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
-        supportActionBar?.title = "${apart_name}아파트 ${complex_name}동 ${complex_line}라인"
         supportActionBar?.setDisplayUseLogoEnabled(true)
+        supportActionBar?.title = "${apart_name}아파트 ${complex_name}동 ${complex_line}라인"
         d("complex_id", complex_id.toString())
         itemList = db.readDongData(complex_id)
 
@@ -45,5 +46,20 @@ class DongActivity : AppCompatActivity() {
         recyclerView.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
+        adapter.setRadioChangedListener( object : ListAdapter.RadioBtnChangedListener{
+            override fun onClickedRadioButton(view: View, position: Int, idRes: Int) {
+                when(idRes){
+                    //0: 미완료, 1:처리완료, 2:불량, 3:기타
+                    R.id.rbDone -> update(complex_id, itemList[position].ho, 1)
+                    R.id.rbInComplete -> update(complex_id, itemList[position].ho, 0)
+                    R.id.rbBad -> update(complex_id, itemList[position].ho, 2)
+                    R.id.rbEtc -> update(complex_id, itemList[position].ho, 3)
+                }
+            }
+        })
+    }
+    fun update(complex_id: Int, ho: String, isCompletion: Int){
+        d("UPDATE", "$complex_id $ho $isCompletion")
+        db.updateHo(complex_id, ho, isCompletion)
     }
 }
