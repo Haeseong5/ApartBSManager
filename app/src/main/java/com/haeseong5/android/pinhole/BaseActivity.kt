@@ -2,19 +2,19 @@ package com.haeseong5.android.pinhole
 
 import android.R
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.toolbar.*
+import com.haeseong5.android.pinhole.Ho.HoActivity
+import com.haeseong5.android.pinhole.work.WorkActivity
 
 
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity(){
-    private var progressDialog : com.haeseong5.android.pinhole.dong.ProgressDialog? = null
+    private var progressDialog : com.haeseong5.android.pinhole.Ho.ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,7 @@ open class BaseActivity : AppCompatActivity(){
     }
     fun showProgressDialog(){
         if(progressDialog == null){
-            progressDialog = com.haeseong5.android.pinhole.dong.ProgressDialog(this)
+            progressDialog = com.haeseong5.android.pinhole.Ho.ProgressDialog(this)
         }
 
         progressDialog!!.show()
@@ -49,6 +49,8 @@ open class BaseActivity : AppCompatActivity(){
                 return true
             }
             com.haeseong5.android.pinhole.R.id.action_work ->{
+                val intent = Intent(this, WorkActivity::class.java)
+                startActivity(intent)
                 return true
             }
         }

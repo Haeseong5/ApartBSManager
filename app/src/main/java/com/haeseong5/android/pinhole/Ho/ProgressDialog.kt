@@ -1,14 +1,10 @@
-package com.haeseong5.android.pinhole.dong
+package com.haeseong5.android.pinhole.Ho
 
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.Window
 import android.widget.ProgressBar
-import android.widget.TextView
 import com.haeseong5.android.pinhole.R
 
 

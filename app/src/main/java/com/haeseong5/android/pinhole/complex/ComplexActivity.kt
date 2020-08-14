@@ -3,15 +3,14 @@ package com.haeseong5.android.pinhole.complex
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
 import com.haeseong5.android.pinhole.BaseActivity
 import com.haeseong5.android.pinhole.DBHelper
 import com.haeseong5.android.pinhole.R
-import com.haeseong5.android.pinhole.dong.DongActivity
+import com.haeseong5.android.pinhole.Ho.HoActivity
 import kotlinx.android.synthetic.main.activity_complex.*
 import kotlinx.android.synthetic.main.dialog_complex.view.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -52,7 +51,7 @@ class ComplexActivity : BaseActivity() {
 
         complex_listview.setOnItemClickListener { parent, view, position, id ->
 //            Toast.makeText(this, complexList[position].id.toString(), Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, DongActivity::class.java)
+            val intent = Intent(this, HoActivity::class.java)
             intent.putExtra("apart_name", apart_name)
             intent.putExtra("complex_id", complexList[position].id)
             intent.putExtra("complex_name", complexList[position].dong)
@@ -62,9 +61,8 @@ class ComplexActivity : BaseActivity() {
         }
         adapter.setItemClickListener( object : ComplexAdapter.ListBtnClickListener{
             override fun onDeleteButtonClick(view: View, position: Int) {
-//                showNameDeleteDialog(position)
-                showProgressDialog()
-                deleteData(complexList[position].id, position)
+                showNameDeleteDialog(position)
+
             }
         })
 
@@ -105,7 +103,19 @@ class ComplexActivity : BaseActivity() {
             mAlertDialog.dismiss()
         }
     }
-
+    private fun showNameDeleteDialog(position: Int){
+        val builder = AlertDialog.Builder(ContextThemeWrapper(this, R.style.Theme_AppCompat_Light_Dialog))
+        builder.setTitle("Delete")
+        builder.setMessage("정말 삭제하시겠습니까?")
+        builder.setPositiveButton("확인") {_, _ ->
+            showProgressDialog()
+            deleteData(complexList[position].id, position)
+        }
+        builder.setNegativeButton("취소") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
     private fun addAllHo(complex: Complex, id: Int){
         var count = complex.floor * complex.line.length
         for (i in 1..complex.floor) {
@@ -125,7 +135,7 @@ class ComplexActivity : BaseActivity() {
     private fun deleteData(complex_id: Int, position: Int){
         val code: Int = db.deleteComplex(complex_id)
         if(code>-1){
-            db.deleteDong(complex_id)
+            db.deleteHo(complex_id)
             complexList.removeAt(position)
         }
 
@@ -133,12 +143,4 @@ class ComplexActivity : BaseActivity() {
         dismissProgressDialog()
     }
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu?,
-        v: View?,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        R.menu.menu_items
-    }
 }

@@ -83,7 +83,7 @@ class MainActivity : BaseActivity(){
 
         mDialogView.dialogApartBtnCheck.setOnClickListener {
             val name = mDialogView.dialogApartEtName.text.toString()
-            if (name.length > -1){
+            if (name.length > 1){
                 add(name)
             }else{
                 printToast("두 글자 이상 입력하세요.")
@@ -107,8 +107,9 @@ class MainActivity : BaseActivity(){
 
         mDialogView.dialogApartBtnCheck.setOnClickListener {
             val name = mDialogView.dialogApartEtName.text.toString()
-            if (name.length > -1){
+            if (name.length > 1){
                 update(name, position)
+                mAlertDialog.dismiss()
             }else{
                 printToast("두 글자 이상 입력하세요.")
             }
@@ -152,23 +153,22 @@ class MainActivity : BaseActivity(){
         apartList[position].name = name
 
         val code: Int = db.updateApart(apartList[position])
-        d("code", code.toString())
 
         if(code > -1){
-            adapter.notifyDataSetChanged()
             Toast.makeText(this,"수정 성공",Toast.LENGTH_SHORT).show()
         }else{
             Toast.makeText(this,"수정 실패",Toast.LENGTH_SHORT).show()
         }
-        adapter.notifyDataSetChanged()    }
+        adapter.notifyDataSetChanged()
+    }
 
     private fun delete(position: Int){
             val code = db.deleteApart(apartList[position].id)
             if (code > -1){
                 apartList.removeAt(position)
                 adapter.notifyDataSetChanged()
+                Toast.makeText(this,"삭제 성공",Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(this,"삭제 성공",Toast.LENGTH_SHORT).show()
             dismissProgressDialog()
     }
 

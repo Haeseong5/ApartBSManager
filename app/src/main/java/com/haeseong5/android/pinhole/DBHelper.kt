@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log.d
 import com.haeseong5.android.pinhole.apart.Apart
 import com.haeseong5.android.pinhole.complex.Complex
-import com.haeseong5.android.pinhole.dong.Dong
+import com.haeseong5.android.pinhole.Ho.Ho
+import com.haeseong5.android.pinhole.work.Work
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,7 +16,7 @@ import kotlin.collections.ArrayList
 class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION){
 
     companion object { //static
-        private val DATABASE_VERSION = 4
+        private val DATABASE_VERSION = 5
         private val DATABASE_NAME = "PINHOLE.db"
 
         //Apart Table
@@ -32,12 +33,12 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
         private val COMPLEX_APART_ID = "ApartId" //외래키
 
         //Dong Tale
-        private val TABLE_DONG = "Dong"
-        private val DONG_HO = "Ho"
-        private val DONG_IS_COMPLETION = "IsCompletion"
-        private val DONG_DATE = "Date"
-        private val DONG_COMPLEX_ID = "ComplexId" //외래키
-        private val DONG_APART_ID = "ApartId" //외래키
+        private val TABLE_HO = "Ho"
+        private val HO_NUMBER = "HoNumber"
+        private val HO_IS_COMPLETION = "IsCompletion"
+        private val HO_DATE = "Date"
+        private val HO_COMPLEX_ID = "ComplexId" //외래키
+        private val HO_APART_ID = "ApartId" //외래키
 
     }
 
@@ -58,17 +59,17 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
                     "$COMPLEX_APART_ID INTEGER NOT NULL " + //외래키
                     ");"
 
-        val CREATE_DONG_TABLE_QUERY =
-            "CREATE TABLE $TABLE_DONG (" +
-                    "$DONG_HO INTEGER NOT NULL, " +
-                    "$DONG_IS_COMPLETION INTEGER, " +
-                    "$DONG_DATE TEXT, " +
-                    "$DONG_COMPLEX_ID INTEGER NOT NULL, " +
-                    "$DONG_APART_ID INTEGER NOT NULL " +
+        val CREATE_HO_TABLE_QUERY =
+            "CREATE TABLE $TABLE_HO (" +
+                    "$HO_NUMBER INTEGER NOT NULL, " +
+                    "$HO_IS_COMPLETION INTEGER, " +
+                    "$HO_DATE TEXT, " +
+                    "$HO_COMPLEX_ID INTEGER NOT NULL, " +
+                    "$HO_APART_ID INTEGER NOT NULL " +
                     ");"
         db!!.execSQL(CREATE_TABLE_QUERY)
         db!!.execSQL(CREATE_COMPLEX_TABLE_QUERY)
-        db!!.execSQL(CREATE_DONG_TABLE_QUERY)
+        db!!.execSQL(CREATE_HO_TABLE_QUERY)
 
     }
 
@@ -76,7 +77,7 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db!!.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         db!!.execSQL("DROP TABLE IF EXISTS $TABLE_COMPLEX")
-        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_DONG")
+        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_HO")
 
         onCreate(db!!)
     }
@@ -87,7 +88,7 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
             get(){
                 val apartList = ArrayList<Apart>()
                 val selectQueryHandler = "SELECT * FROM $TABLE_NAME"
-                val db = this.writableDatabase
+                val db = this.readableDatabase
                 val cursor = db.rawQuery(selectQueryHandler, null)
 
                 if(cursor.moveToFirst())
@@ -126,7 +127,7 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
     fun deleteApart(apart_id: Int): Int{
         val db = this.writableDatabase
         val code: Int
-        db.delete(TABLE_DONG, "$DONG_APART_ID=?", arrayOf(apart_id.toString()))
+        db.delete(TABLE_HO, "$HO_APART_ID=?", arrayOf(apart_id.toString()))
         db.delete(TABLE_COMPLEX, "$COMPLEX_APART_ID=?", arrayOf(apart_id.toString()))
         code = db.delete(TABLE_NAME, "$APART_ID=?", arrayOf(apart_id.toString()))
         db.close()
@@ -177,44 +178,43 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
     fun addHoData(apart_id: Int, complex_id: Int, ho: String){
         val db = this.writableDatabase
         val values = ContentValues()
-        values.put(DONG_HO, ho)
-        values.put(DONG_COMPLEX_ID, complex_id)
-        values.put(DONG_APART_ID, apart_id)
+        values.put(HO_NUMBER, ho)
+        values.put(HO_COMPLEX_ID, complex_id)
+        values.put(HO_APART_ID, apart_id)
 
-        db.insert(TABLE_DONG, null, values)
+        db.insert(TABLE_HO, null, values)
     }
 
-    fun readDongData(COMPLEX_ID: Int): ArrayList<Dong>{
-            val dongList = ArrayList<Dong>()
-            val selectQueryHandler = "SELECT * FROM $TABLE_DONG WHERE $DONG_COMPLEX_ID = $COMPLEX_ID"
-            val db = this.readableDatabase
-            val cursor = db.rawQuery(selectQueryHandler, null)
+    fun readHoData(COMPLEX_ID: Int): ArrayList<Ho>{
+        val hoList = ArrayList<Ho>()
+        val selectQueryHandler = "SELECT * FROM $TABLE_HO WHERE $HO_COMPLEX_ID = $COMPLEX_ID"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(selectQueryHandler, null)
 
-            if(cursor.moveToFirst())
-            {
-                do {
-                    val dong = Dong()
-                    dong.ho = cursor.getString(cursor.getColumnIndex(DONG_HO))
-                    dong.complex_id = cursor.getInt(cursor.getColumnIndex(DONG_COMPLEX_ID))
-                    dong.isCompletion = cursor.getInt(cursor.getColumnIndex(DONG_IS_COMPLETION))
-                    dong.date = cursor.getString(cursor.getColumnIndex(DONG_DATE))
-                    dong.apart_id = cursor.getInt(cursor.getColumnIndex(DONG_APART_ID))
+        if(cursor.moveToFirst())
+        {
+            do {
+                val ho = Ho()
+                ho.ho = cursor.getString(cursor.getColumnIndex(HO_NUMBER))
+                ho.complex_id = cursor.getInt(cursor.getColumnIndex(HO_COMPLEX_ID))
+                ho.isCompletion = cursor.getInt(cursor.getColumnIndex(HO_IS_COMPLETION))
+                ho.date = cursor.getString(cursor.getColumnIndex(HO_DATE))
+                ho.apart_id = cursor.getInt(cursor.getColumnIndex(HO_APART_ID))
 
-                    dongList.add(dong)
-                }while (cursor.moveToNext())
-            }
-            d("DONG 리스트", dongList.size.toString())
-            db.close()
-            return dongList
+                hoList.add(ho)
+            }while (cursor.moveToNext())
         }
+        db.close()
+        return hoList
+    }
 
     fun updateHo(complex_id: Int, ho: String, isCompletion: Int):Int{
         val db = this.writableDatabase
         val values = ContentValues()
-        values.put(DONG_IS_COMPLETION, isCompletion)
-        values.put(DONG_DATE, getDateTime())
+        values.put(HO_IS_COMPLETION, isCompletion)
+        values.put(HO_DATE, getDateTime())
         //arrayOf(): 전달된 값들로 array 생성
-        return db.update(TABLE_DONG, values,"$DONG_COMPLEX_ID=? AND $DONG_HO=?", arrayOf(complex_id.toString(), ho))
+        return db.update(TABLE_HO, values,"$HO_COMPLEX_ID=? AND $HO_NUMBER=?", arrayOf(complex_id.toString(), ho))
     }
     private fun getDateTime(): String? {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
@@ -228,12 +228,35 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
         db.close()
         return code
     }
-    fun deleteDong(complex_id: Int): Int{
+    fun deleteHo(complex_id: Int): Int{
         val db = this.writableDatabase
-        val code: Int = db.delete(TABLE_DONG, "$DONG_COMPLEX_ID=?", arrayOf(complex_id.toString()))
+        val code: Int = db.delete(TABLE_HO, "$HO_COMPLEX_ID=?", arrayOf(complex_id.toString()))
         db.close()
         return code
     }
+    fun readAllHo(): ArrayList<Ho>{
+        val hoList = ArrayList<Ho>()
+        val selectQueryHandler = "SELECT * FROM $TABLE_HO "
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(selectQueryHandler, null)
+
+        if(cursor.moveToFirst())
+        {
+            do {
+                val ho = Ho()
+                ho.ho = cursor.getString(cursor.getColumnIndex(HO_NUMBER))
+                ho.complex_id = cursor.getInt(cursor.getColumnIndex(HO_COMPLEX_ID))
+                ho.isCompletion = cursor.getInt(cursor.getColumnIndex(HO_IS_COMPLETION))
+                ho.date = cursor.getString(cursor.getColumnIndex(HO_DATE))
+                ho.apart_id = cursor.getInt(cursor.getColumnIndex(HO_APART_ID))
+
+                hoList.add(ho)
+            }while (cursor.moveToNext())
+        }
+        db.close()
+        return hoList
+    }
+
 }
 
 
