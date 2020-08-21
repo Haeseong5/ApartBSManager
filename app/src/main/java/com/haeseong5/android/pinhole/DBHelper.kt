@@ -151,29 +151,28 @@ class DBHelper (context: Context) :SQLiteOpenHelper(context, DATABASE_NAME, null
         return code
     }
 
-    val readComplex:ArrayList<Complex>
-        get(){
-            val complexList = ArrayList<Complex>()
-            val selectQueryHandler = "SELECT * FROM $TABLE_COMPLEX"
-            val db = this.writableDatabase
-            val cursor = db.rawQuery(selectQueryHandler, null)
+    fun readComplex(apart_id: Int):ArrayList<Complex> {
+        val complexList = ArrayList<Complex>()
+        val selectQueryHandler = "SELECT * FROM $TABLE_COMPLEX WHERE $COMPLEX_APART_ID= $apart_id"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(selectQueryHandler, null)
 
-            if(cursor.moveToFirst())
-            {
-                do {
-                    val complex = Complex()
-                    complex.id = cursor.getInt(cursor.getColumnIndex(COMPLEX_ID))
-                    complex.dong = cursor.getString(cursor.getColumnIndex(COMPLEX_DONG))
-                    complex.line = cursor.getString(cursor.getColumnIndex(COMPLEX_LINE))
-                    complex.floor = cursor.getInt(cursor.getColumnIndex(COMPLEX_FLOOR))
-                    complex.apart_id = cursor.getInt(cursor.getColumnIndex(COMPLEX_APART_ID))
+        if (cursor.moveToFirst()) {
+            do {
+                val complex = Complex()
+                complex.id = cursor.getInt(cursor.getColumnIndex(COMPLEX_ID))
+                complex.dong = cursor.getString(cursor.getColumnIndex(COMPLEX_DONG))
+                complex.line = cursor.getString(cursor.getColumnIndex(COMPLEX_LINE))
+                complex.floor = cursor.getInt(cursor.getColumnIndex(COMPLEX_FLOOR))
+                complex.apart_id = cursor.getInt(cursor.getColumnIndex(COMPLEX_APART_ID))
 
-                    complexList.add(complex)
-                }while (cursor.moveToNext())
-            }
-            db.close()
-            return complexList
+                complexList.add(complex)
+            } while (cursor.moveToNext())
         }
+        db.close()
+//        d("F", complexList.size.toString())
+        return complexList
+    }
 
     fun addHoData(apart_id: Int, complex_id: Int, ho: String){
         val db = this.writableDatabase

@@ -45,7 +45,10 @@ class ComplexActivity : BaseActivity() {
     }
 
     private fun initData(){
-        complexList = db.readComplex
+
+        d("아파트 아이디", apart_id.toString())
+        complexList = db.readComplex(apart_id)
+        d("컴플렉스 수", complexList.size.toString())
         adapter = ComplexAdapter(this, complexList)
         complex_listview.adapter = adapter
 

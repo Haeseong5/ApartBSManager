@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PinHole</string>
+    <string name="app_name">동타기</string>
     <string name="toolbar_title_main">B/S 현황</string>
     <string name="dialog_progress_message">잠시만 기다려주세요.</string>
     <string name="work_status_message">해당 날짜에 작업완료/불량 처리한 항목만 계산됩니다.</string>
